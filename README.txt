@@ -3,6 +3,8 @@ This repository is a copy of the code from the Moodle plugins db, with code from
 I have not reviewed this plugin completely and do not endorse it personally. I put this in github here to help with a proof of concept site and am not using this code in production.
 (Dan Marsden March 2017)
 
+Further changes have been made for individual requirements.
+(Andy Shaw Aug 2025)
 
 ------------
 These instructions describe how to install the Enrollment block for Moodle 2+.  This module is developped and supported by Symetrix.
@@ -56,3 +58,4 @@ If you have feedback or any questions, contact us at
 
 Regards,... Adrien Jamot
 adrien_jamot [at] symetrix [dt] fr
+
