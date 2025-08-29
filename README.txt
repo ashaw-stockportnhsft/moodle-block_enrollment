@@ -4,10 +4,11 @@ I have not reviewed this plugin completely and do not endorse it personally. I p
 (Dan Marsden March 2017)
 
 Further changes have been made for individual requirements:
- 1. Block expanded use to contain other admin 'Quick Links', updated to work on Moodle 4.5 with Font-Awesome v5.
- 2. Display changes in user data for selected users on the form - name fields seperated better, user email shown.
- 3. Courses to enrol onto only pulls from a selected Parent Category.
- 4. New strings added into lang pack and used on enrolment page.
+ 1. Block visibility expanded to include all users with permission to edit other user profiles.
+ 2. Block expanded use to contain other admin 'Quick Links', updated to work on Moodle 4.5 with Font-Awesome v5.
+ 3. Display changes in user data for selected users on the form - name fields seperated better, user email shown.
+ 4. Courses to enrol onto only pulls from a selected Parent Category.
+ 5. New strings added into lang pack and used on enrolment page.
 (Andy Shaw Aug 2025)
 
 ------------
@@ -62,6 +63,7 @@ If you have feedback or any questions, contact us at
 
 Regards,... Adrien Jamot
 adrien_jamot [at] symetrix [dt] fr
+
 
 
 
