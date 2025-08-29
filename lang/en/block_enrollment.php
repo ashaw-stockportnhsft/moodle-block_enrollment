@@ -5,6 +5,8 @@ $string['enrollment'] = 'Quick Enrol';
 $string['notallowed'] = 'Access Denied';
 $string['submit'] = 'Submit';
 $string['description'] = 'You can enrol a user in multiple courses. Choose a user, choose their role, and choose 1 or more courses for them to be enrolled in. The start date defaults to today. You can set an end date for them to be automatically un-enrolled on, or leave it blank so they will never be un-enrolled.';
+$string['pleasenote'] ='Please Note'; //new string added
+$string['disclaimer'] = 'This is only for eLearning Courses.'; //new string added
 
 $string['users'] = 'Select user';
 $string['roles'] = 'Assign role';
