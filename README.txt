@@ -3,7 +3,11 @@ This repository is a copy of the code from the Moodle plugins db, with code from
 I have not reviewed this plugin completely and do not endorse it personally. I put this in github here to help with a proof of concept site and am not using this code in production.
 (Dan Marsden March 2017)
 
-Further changes have been made for individual requirements.
+Further changes have been made for individual requirements:
+ 1. Block expanded use to contain other admin 'Quick Links'
+ 2. Display changes in user data for selected users on the form - name fields seperated better, user email shown.
+ 3. Courses to enrol onto only pulls from a selected Parent Category.
+ 4. New strings added into lang pack and used on enrolment page.
 (Andy Shaw Aug 2025)
 
 ------------
@@ -58,4 +62,5 @@ If you have feedback or any questions, contact us at
 
 Regards,... Adrien Jamot
 adrien_jamot [at] symetrix [dt] fr
+
 
