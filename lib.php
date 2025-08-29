@@ -6,7 +6,10 @@ function enrollment_get_courses_list($userid) {
     $req = "
             SELECT DISTINCT (c.id), c.shortname
             FROM {course} c
-            WHERE
+   			INNER JOIN 	{course_categories} cc  ON cc.id = c.category
+			WHERE
+			   cc.parent = 25
+               AND 
                c.id != 1
                AND
                c.id NOT IN (
@@ -17,7 +20,7 @@ function enrollment_get_courses_list($userid) {
                         AND ue.enrolid = e.id
                         AND e.courseid = c.id
                 )
-        "; //c.id=1 is Main Menu and not really a course
+        "; //c.id=1 is Main Menu and not really a course. This modified code shows only courses from our eLearning Parent Category.
     $courses = array();
     $result = $DB->get_records_sql($req);
     foreach ($result as $course) {
@@ -47,7 +50,7 @@ function enrollment_display_users_options($currentselecteduser) {
         if ($currentselecteduser == $user->id) {
             $selectedoption = 'selected="selected"';
         }
-        $options .= '<option value="' . $user->id . '" ' . $selectedoption . '>' . $user->lastname . ' ' . $user->firstname . '</option>';
+        $options .= '<option value="' . $user->id . '" ' . $selectedoption . '>' . $user->lastname . ', ' . $user->firstname . ' (' . $user->email . ')' . '</option>'; //modified to now include a comma to seperate lastname/first name and includes email
     }
     $users->close();
     return $options;
@@ -108,3 +111,4 @@ function enrollment_display_roles() {
     }
     return $options;
 }
+
