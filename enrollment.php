@@ -60,6 +60,7 @@ $defaultStartDateText = date("m/d/Y"); //Today //TO DO: Does this need to be dif
 
 ?>
     <p><b><?php echo get_string('pluginname', 'block_enrollment') ?></b> - <?php echo get_string('description', 'block_enrollment') ?></p>
+    <p><b><?php echo get_string('pleasenote', 'block_quickenrol') ?></b> - <?php echo get_string('disclaimer', 'block_quickenrol') ?></p> //new disclaimer string added
     <div style="padding:5px;">
         <form name ="form" id="form" method="POST" action="#">
             <div style="padding:20px;">
@@ -115,3 +116,4 @@ $defaultStartDateText = date("m/d/Y"); //Today //TO DO: Does this need to be dif
     </div>
 <?php
 echo $OUTPUT->footer();
+
