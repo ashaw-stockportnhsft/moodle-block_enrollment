@@ -25,18 +25,36 @@ class block_enrollment extends block_base {
         }
 
         // shortcut -  only for admins
-        if (!isloggedin() || isguestuser() || !is_siteadmin()) {
+        if (!isloggedin() || isguestuser() || !has_capability('moodle/user:editprofile', $systemcontext) ){
             return false;
         }
         $this->content = new stdClass();
         $this->content->footer = '';
-        $this->content->text = '<a href="'.$CFG->wwwroot.'/blocks/enrollment/enrollment.php">'.get_string('enrolusers', 'block_enrollment').'</a>';
-
-        //Some extra functions that go alonge with enrolling a user, like adding a user and viewing existing users
-        $this->content->text .= '<br><a href="'.$CFG->wwwroot.'/user/editadvanced.php?id=-1">'.get_string('addnewuser', 'block_enrollment').'</a>';
-        $this->content->text .= '<br><a href="'.$CFG->wwwroot.'/admin/user.php">'.get_string('browseusers', 'block_enrollment').'</a>';
-        //$this->content->text .= '<br><a href="'.$CFG->wwwroot.'/admin/user/user_bulk.php">'.get_string('bulkuseractions', 'block_enrollment').'</a>';
-
+        
+        // Moddified to include code to only show if editing teacher access (or more)
+		if (has_capability('moodle/user:create', context_system::instance())) { //Checks user role, section not visible to Non-Editing teachers
+			//Original modded Code
+			$this->content->text .= '<br><p class="tree_item branch navigation_node" tabindex="-1"><i class="icon fa fa fa-user-plus fa-fw navicon" aria-hidden="true" tabindex="0" aria-selected="true"></i><a href="'.$CFG->wwwroot.'/blocks/quickenrol/quickenrol.php">Quick Enrol user on eLearning'.'</a></p>'; 
+			//Some extra functions that go alonge with enrolling a user, like adding a user and viewing existing users
+			$this->content->text .= '<p class="tree_item branch navigation_node" tabindex="-1"><i class="icon fa fa fa-gear fa-fw navicon" aria-hidden="true" tabindex="0" aria-selected="true"></i><a href="'.$CFG->wwwroot.'/user/editadvanced.php?id=-1">'.get_string('addnewuser', 'block_quickenrol').'</a></p>';
+		}
+		if (has_capability('moodle/user:update', context_system::instance())) { //Checks user permissions - only show if can update a user (this is what is needed for access to browse anyway)
+			$this->content->text .= '<p class="tree_item branch navigation_node" tabindex="-1"><i class="icon fa fa fa-user-group fa-fw navicon" aria-hidden="true" tabindex="0" aria-selected="true"></i><a href="'.$CFG->wwwroot.'/admin/user.php">'.get_string('browseusers', 'block_quickenrol').'</a></p>';
+			//$this->content->text .= '<br><a href="'.$CFG->wwwroot.'/admin/user/user_bulk.php">'.get_string('bulkuseractions', 'block_quickenrol').'</a>';
+			//Original modded code end
+		}
+		
+		//Patch to include all courses link (taken from 'block_course_list.php)
+		if (has_capability('moodle/course:update', context_system::instance()) || empty($CFG->block_course_list_hideallcourseslink)) {
+			$this->content->text .= '<p class="tree_item branch navigation_node" tabindex="-1"><i class="icon fa fa fa-network-wired fa-fw navicon" aria-hidden="true" tabindex="0" aria-selected="true"></i><a href="'.$CFG->wwwroot.'/course/index.php">Browse list of courses'.'</a></p>'; 	
+		}		
+		//Manage Cohorts 
+		if (has_capability('moodle/cohort:manage', context_system::instance())) {
+			$this->content->text .= '<p class="tree_item branch navigation_node" tabindex="-1"><i class="icon fa fa fa-gear fa-fw navicon" aria-hidden="true" tabindex="0" aria-selected="true"></i><a href="'.$CFG->wwwroot.'/cohort/index.php">Manage cohorts'.'</a></p>'; 	
+		}	
+		//View Custom SQL Reports
+		$this->content->text .= '<p class="tree_item branch navigation_node" tabindex="-1"><i class="icon fa fa fa-chart-column fa-fw navicon" aria-hidden="true" tabindex="0" aria-selected="true"></i><a href="'.$CFG->wwwroot.'/report/customsql/index.php">Custom SQL Reports'.'</a></p>';
+        
         return $this->content;
     }
 
