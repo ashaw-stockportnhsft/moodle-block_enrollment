@@ -1,10 +1,9 @@
 <?php
-require_once("../../config.php");
-require_once('lib.php');
+    require_once("../../config.php");
+    require_once('lib.php');
 
-$user = required_param('user', PARAM_INT);
+    //TO DO: Is this code okay, or should it require a capability or is_siteadmin?
 
-require_login();
-require_capability('blocks/enrollment:viewpage', context_system::instance());
-
-echo json_encode(enrollment_get_courses_list($user));
+    $user = $_POST['user'];
+    echo json_encode(quickenrol_get_courses_list($user));
+?>
