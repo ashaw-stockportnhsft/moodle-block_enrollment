@@ -3,7 +3,9 @@
 ////// COURSES //////
 function quickenrol_get_courses_list($userid) {
     global $DB;
-
+//course_categories is joined and used in this build to restrict enrolment to one parent category. Remove join and clause if not needed.
+//Selected all required fields (fullname, dates, visible) for data robustness.
+//Added explicit check for active 'manual' enrollment (e_manual.status = 0).    
     $req = "
         SELECT 
             c.id, c.shortname, c.fullname, c.visible, c.startdate, c.enddate
@@ -133,4 +135,5 @@ function quickenrol_display_roles() {
     }
     return $options;
 }
+
 
