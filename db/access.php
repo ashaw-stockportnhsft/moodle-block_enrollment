@@ -2,7 +2,7 @@
 
 $capabilities = array(
 
-    'blocks/enrollment:viewpage' => array(
+    'blocks/quickenrol:viewpage' => array(
 
         'captype' => 'read',
         'contextlevel' => CONTEXT_SYSTEM,
@@ -13,7 +13,7 @@ $capabilities = array(
         )
     ),
 
-    'block/enrollment:addinstance' => array(
+    'block/quickenrol:addinstance' => array(
         'riskbitmask' => RISK_SPAM | RISK_XSS,
 
         'captype' => 'write',
@@ -24,17 +24,6 @@ $capabilities = array(
         ),
 
         'clonepermissionsfrom' => 'moodle/site:manageblocks'
-    ),
-
-    'block/enrollment:myaddinstance' => array(
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
-
-        'clonepermissionsfrom' => 'moodle/site:manageblock'
     ),
 );
 
