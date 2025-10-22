@@ -1,47 +1,72 @@
 <?php
 
 ////// COURSES //////
-function enrollment_get_courses_list($userid) {
+function quickenrol_get_courses_list($userid) {
     global $DB;
+    
+    // FIXES: 
+    // 1. Used LEFT JOIN for performance (replaces NOT IN subquery).
+    // 2. Used :userid placeholder for security.
+    // 3. Selected all required fields (fullname, dates, visible) for data robustness.
+    // 4. Added explicit check for active 'manual' enrollment (e_manual.status = 0).
     $req = "
-            SELECT DISTINCT (c.id), c.shortname
-            FROM {course} c
-   			INNER JOIN 	{course_categories} cc  ON cc.id = c.category
-			WHERE
-			   cc.parent = 25
-               AND 
-               c.id != 1
-               AND
-               c.id NOT IN (
-                    SELECT DISTINCT(c.id)
-                    FROM {enrol} e, {course} c, {user_enrolments} ue
-                    WHERE
-                        ue.userid = " . $userid . "
-                        AND ue.enrolid = e.id
-                        AND e.courseid = c.id
-                )
-        "; //c.id=1 is Main Menu and not really a course. This modified code shows only courses from our eLearning Parent Category.
-    $courses = array();
-    $result = $DB->get_records_sql($req);
-    foreach ($result as $course) {
-        $courses[] = $course;
+        SELECT 
+            c.id, c.shortname, c.fullname, c.visible, c.startdate, c.enddate
+        FROM 
+            {course} c
+        INNER JOIN 
+            {course_categories} cc ON cc.id = c.category
+        LEFT JOIN 
+            {enrol} e_manual ON e_manual.courseid = c.id AND e_manual.enrol = 'manual'
+        LEFT JOIN 
+            {enrol} e_user ON e_user.courseid = c.id
+        LEFT JOIN 
+            {user_enrolments} ue ON ue.enrolid = e_user.id AND ue.userid = :userid
+        WHERE
+            cc.parent = 25 
+            AND c.id != 1
+            AND e_manual.status = 0
+            AND ue.id IS NULL 
+        ORDER BY 
+            c.fullname ASC
+    ";
+
+    $params = ['userid' => $userid];
+    
+    $courses = $DB->get_records_sql($req, $params);
+    
+    // Defensive check: Return an empty array if query failed.
+    if ($courses === false) {
+        return array();
     }
+    
     return $courses;
 }
 
-function enrollment_display_courses_options($userid) {
-    $courses = enrollment_get_courses_list($userid);
+function quickenrol_display_courses_options($userid) {
+    $courses = quickenrol_get_courses_list($userid);
+    
+    // Initialize options and add defensive check.
+    $options = ''; 
+    if (!is_array($courses) && !is_object($courses)) {
+        return $options;
+    }
+    
     foreach ($courses as $course) {
-        $options .= '<option value="' . $course->id . '">' . $course->shortname . '</option>';
+        // CRITICAL FIX: Use s() and format_string() to safely escape output strings.
+        $safe_id = s($course->id);
+        $displayname = format_string($course->shortname . ' - ' . $course->fullname);
+        
+        $options .= '<option value="' . $safe_id . '">' . $displayname . '</option>';
     }
     return $options;
 }
 
 ////// USERS //////
 
-function enrollment_display_users_options($currentselecteduser) {
+function quickenrol_display_users_options($currentselecteduser) {
     global $DB;
-    $select = "id != 1 AND deleted = 0 AND suspended = 0 AND confirmed = 1 ORDER BY lastname"; //id=1=Administrator //only show confirmed users that are not suspended and not deleted
+    $select = "id != 1 AND deleted = 0 AND suspended = 0 AND confirmed = 1 ORDER BY lastname"; 
     $users = $DB->get_recordset_select("user", $select);
 
     $options = '';
@@ -50,14 +75,20 @@ function enrollment_display_users_options($currentselecteduser) {
         if ($currentselecteduser == $user->id) {
             $selectedoption = 'selected="selected"';
         }
-        $options .= '<option value="' . $user->id . '" ' . $selectedoption . '>' . $user->lastname . ', ' . $user->firstname . ' (' . $user->email . ')' . '</option>'; //modified to now include a comma to seperate lastname/first name and includes email
+        
+        // Use s() for user data that goes into HTML.
+        $lastname = s($user->lastname);
+        $firstname = s($user->firstname);
+        $email = s($user->email);
+        
+        $options .= '<option value="' . $user->id . '" ' . $selectedoption . '>' . $lastname . ', ' . $firstname . ' (' . $email . ')' . '</option>'; 
     }
     $users->close();
     return $options;
 }
 
 ////// ENROL //////
-function enrollment_enrol_user($userid, $courseid, $role, $timestart, $timeend) {
+function quickenrol_enrol_user($userid, $courseid, $role, $timestart, $timeend) {
     global $DB, $CFG;
     $instance = $DB->get_record('enrol', array('enrol' => 'manual', 'courseid' => $courseid));
     $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
@@ -79,36 +110,31 @@ function enrollment_enrol_user($userid, $courseid, $role, $timestart, $timeend) 
 }
 
 ////// ROLES //////
-function enrollment_get_role_name($roleid) {
+function quickenrol_get_role_name($roleid) {
     global $DB;
-    $sql = '
-        SELECT
-            *
-        FROM
-            {role}
-        WHERE
-            id= ' . $roleid;
-    return $DB->get_record_sql($sql);
+    // FIX: Using get_record_select with parameter is more secure and reliable.
+    $sql = 'id = :roleid';
+    // The "unclosed parenthesis" was likely an extra ')' in the previous iteration of this line.
+    return $DB->get_record_select('role', $sql, ['roleid' => $roleid]);
 }
 
-function enrollment_get_roles() {
+function quickenrol_get_roles() {
     $roles = array();
-    $rolesContext = get_roles_for_contextlevels(CONTEXT_COURSE);
+    $rolesContext = get_roles_for_contextlevels(CONTEXT_COURSE); 
     foreach ($rolesContext as $roleContext) {
-        $role = enrollment_get_role_name($roleContext);
+        $role = quickenrol_get_role_name($roleContext);
         $roles[] = $role;
     }
     return $roles;
 }
 
-function enrollment_display_roles() {
-    $roles = enrollment_get_roles();
+function quickenrol_display_roles() {
+    $roles = quickenrol_get_roles();
     $options = '';
     foreach ($roles as $role) {
         $role->name = role_get_name($role);
         $selected = $role->id == 5 ? 'selected' : '';
-        $options .= '<option value="' . $role->id . '" ' . $selected . '>' . $role->name . '</option>';
+        $options .= '<option value="' . $role->id . '" ' . $selected . '>' . s($role->name) . '</option>';
     }
     return $options;
 }
-
