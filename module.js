@@ -1,4 +1,4 @@
-M.block_enrollment = {
+M.block_quickenrol = {
     init: function(Y) {
         var that = this;
         $('#insc_users').on('change', function() {
@@ -19,4 +19,3 @@ M.block_enrollment = {
                 );
     }
 };
-
