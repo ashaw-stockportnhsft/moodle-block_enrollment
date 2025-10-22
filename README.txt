@@ -3,7 +3,7 @@ This repository is a copy of the code from the Moodle plugins db, with code from
 I have not reviewed this plugin completely and do not endorse it personally. I put this in github here to help with a proof of concept site and am not using this code in production.
 (Dan Marsden March 2017)
 
-I have reverted changes back to original before I have made my amendments, these have been made for individual requirements and general Moodle updates to be in line with Moodle 4.5 LTS:
+I have reverted changes back to Adrien Jamot original before I uploaded my amendments as I had started this project locally using the original work. These changes have been made for individual requirements of my Moodle and also for general Moodle updates to be in line and working with Moodle 4.5 LTS:
  1. Block visibility expanded to include all users with permission to edit other user profiles.
  2. Block expanded use to contain other admin 'Quick Links', updated to work on Moodle 4.5.X with Font-Awesome v5.
  3. Display changes in user data for selected users on the form - name fields seperated better, user email shown.
@@ -64,6 +64,7 @@ If you have feedback or any questions, contact us at
 
 Regards,... Adrien Jamot
 adrien_jamot [at] symetrix [dt] fr
+
 
 
 
