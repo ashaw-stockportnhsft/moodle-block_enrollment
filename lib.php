@@ -3,12 +3,7 @@
 ////// COURSES //////
 function quickenrol_get_courses_list($userid) {
     global $DB;
-    
-    // FIXES: 
-    // 1. Used LEFT JOIN for performance (replaces NOT IN subquery).
-    // 2. Used :userid placeholder for security.
-    // 3. Selected all required fields (fullname, dates, visible) for data robustness.
-    // 4. Added explicit check for active 'manual' enrollment (e_manual.status = 0).
+
     $req = "
         SELECT 
             c.id, c.shortname, c.fullname, c.visible, c.startdate, c.enddate
@@ -138,3 +133,4 @@ function quickenrol_display_roles() {
     }
     return $options;
 }
+
